@@ -2,7 +2,7 @@ CRA
 
 simple task manager  
 
-demo here https://argdev.ru/proj/test/task-manager/  
+watch demo https://argdev.ru/proj/test/task-manager/  
 
 you can add tasks and remove them  
 you can highlight them onclick to make them more valuable  
