@@ -11,10 +11,15 @@ function App() {
   }
 
   function removeItemFromList(params){
-    const operation1 = list.filter((el,index) => el[index] !== el[params])
+    const operation1 = list.filter((el,index) => index !== params)
     console.log(operation1)
     setList(operation1)
   }
+
+useEffect(() => {
+  console.log(list)
+}, [list])
+
 
 
   return (
@@ -27,7 +32,7 @@ function App() {
         />
         <button type="submit">save</button>
       </form>
-      {list.length > 0 && list.map((el,index)=>{
+      {list.map((el,index)=>{
         return (<>
         <div key={index}>{el} <button onClick={() => removeItemFromList(index)}>remove</button></div>
         </>)
