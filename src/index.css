@@ -24,7 +24,7 @@ body {
   display: flex;
   padding: 10px;
   border: 1px dashed #cecdcd;
-  justify-content: start;
+  justify-content: flex-start;
   margin: 20px;
 }
 

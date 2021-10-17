@@ -1,82 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React, { useReducer } from "react";
+import { reducer, initReducer, inputReducer } from "./todoReducer";
 import clsx from "clsx";
 import "./index.css";
 
 function App() {
-  const [item, setItem] = useState("");
-  const [list, setList] = useState(function () {
-    let todoList = [];
-    try {
-      todoList = JSON.parse(localStorage.getItem("todoList")) || [];
-    } catch (error) {
-      todoList = [];
-    }
-    return todoList;
-  });
-
-  useEffect(() => {
-    localStorage.setItem("todoList", JSON.stringify(list));
-  }, [list]);
-
-  function removeItemFromList(e, params) {
-    e.stopPropagation();
-    setList(list.filter((el, index) => index !== params));
-  }
-
-  function formSubmit(e) {
-    e.preventDefault();
-    setList([...list, { item, active: false }]);
-    setItem("");
-  }
-
-  function toggleClass(params) {
-    setList([
-      ...list.map((el, index) => {
-        if (index === params) {
-          return { ...el, active: !el.active };
-        } else {
-          return { ...el };
-        }
-      }),
-    ]);
-  }
+  const [state, dispatch] = useReducer(reducer, { list: [] }, initReducer);
+  const [input, setInput] = useReducer(inputReducer, { input: "" });
 
   return (
     <>
       <div className={"container"}>
         <div className={"formWrapper"}>
-          <form onSubmit={formSubmit}>
-            <input
-              className={"inputAdd"}
-              onChange={(e) => setItem(e.currentTarget.value)}
-              value={item}
-              type="text"
-            />
-            <button className={"btnAdd"} type="submit">
-              add
-            </button>
-          </form>
+          <input
+            className={"inputAdd"}
+            onChange={(e) => {
+              setInput({ type: "enter", payload: e.currentTarget.value });
+            }}
+            value={input.input}
+            type="text"
+          />
+          <button
+            className={"btnAdd"}
+            type="submit"
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch({ type: "add", payload: input.input });
+              setInput({ type: "reset" });
+            }}
+          >
+            add
+          </button>
         </div>
         <div className={"listWrapper"}>
-          {list.map((el, index) => {
+          {state.list.map((el, index) => {
             return (
               <>
                 <div
-                  onClick={() => toggleClass(index)}
+                  onClick={() => dispatch({ type: "toggle", payload: index })}
                   className={clsx({
                     itemWrapper: true,
-                    listItemActive: el.active,
+                    listItemActive: el.active
                   })}
                 >
                   <button
                     className={"btnRemove"}
-                    onClick={(e) => removeItemFromList(e, index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch({ type: "delete", payload: index });
+                    }}
                   >
                     remove
                   </button>
                   <div
                     className={clsx({
-                      listItem: true,
+                      listItem: true
                     })}
                     key={index}
                   >
